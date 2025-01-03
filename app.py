@@ -1,12 +1,14 @@
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from flask import Flask, render_template, redirect, url_for, request
+from flask_migrate import Migrate, migrate
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
@@ -59,5 +61,5 @@ def add_event():
     return redirect(url_for('index'))
     
 if __name__ == '__main__':
-    db.create_all()
+    init_db()
     app.run(debug=True)
