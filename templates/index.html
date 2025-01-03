@@ -29,7 +29,7 @@
                 <tr>
                     <td>{{ event.name }}</td>
                     <td>{{ event.original_due_date }}</td>
-                    <td>{{ event.original_due_date | next_event_date(event.repeat_internal, event.repeat_often, event.times_completed) }}</td>
+                    <td>{{ event.original_due_date | next_event_date(event.repeat_interval, event.repeat_often, event.times_completed) }}</td>
                     <td>
                         <form action="{{ url_for('delete_event', id=event.id) }}" method="post">
                             <input type="submit" value="Delete">
