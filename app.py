@@ -85,6 +85,22 @@ def add_event():
     return redirect(url_for("index"))
 
 
+@app.route("/complete_event/<int:event_id>", methods=["POST"])
+def complete_event(event_id):
+    event = Event.query.get(event_id)
+    event.times_completed += 1
+    db.session.commit()
+    return redirect(url_for("index"))
+
+
+@app.route("/delete_event/<int:event_id>", methods=["POST"])
+def delete_event(event_id):
+    event = Event.query.get(event_id)
+    if event:
+        db.session.delete(event)
+        db.session.commit()
+
+
 if __name__ == "__main__":
     init_db()
     app.run(debug=True, port=8081)
