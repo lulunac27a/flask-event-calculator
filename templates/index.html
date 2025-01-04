@@ -6,6 +6,7 @@
     <h1>Repeating Event Calculator using Flask</h1>
     Add New Event<br />
     <form action="{{ url_for('add_event') }}" method="post">
+      <!--form to add event-->
       Name:<input type="text" id="name" name="name" /> Date:<input
         type="date"
         id="start_date"
@@ -33,7 +34,7 @@
         <th>Next Event Date</th>
         <th>Actions</th>
       </tr>
-      {% for event in events %}
+      {% for event in events %}<!--repeat for each event in events list-->
       <tr>
         <td>{{ event.name }}</td>
         <td>
@@ -42,9 +43,11 @@
         </td>
         <td>
           <form action="{{ url_for('complete_event', event_id=event.id) }}">
+            <!--button to complete event-->
             <input type="submit" value="Complete" />
           </form>
           <form action="{{ url_for('delete_event', event_id=event.id) }}">
+            <!--button to delete event-->
             <input type="submit" value="Delete" />
           </form>
         </td>
