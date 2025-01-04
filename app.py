@@ -89,6 +89,12 @@ def add_event():
 def complete_event(event_id):
     event = Event.query.get(event_id)
     event.times_completed += 1
+    event.due_date = next_event_date_filter(
+        event.original_due_date,
+        event.repeat_interval,
+        event.repeat_often,
+        event.times_completed,
+    )
     db.session.commit()
     return redirect(url_for("index"))
 
