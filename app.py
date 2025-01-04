@@ -76,7 +76,9 @@ def init_db():  # initialize database
 
 @app.route("/")
 def index():  # get index page template
-    events = Event.query.all()  # get list of all events
+    events = Event.query.order_by(
+        Event.due_date
+    ).all()  # get list of all events sorted by due date
     user = User.query.first()  # get first user in database
     return render_template(
         "index.html", events=events, user=user
