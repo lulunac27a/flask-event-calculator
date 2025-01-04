@@ -42,13 +42,13 @@
         </td>
         <td>
           <form
-            action="{{ url_for('complete_event', id=event.id) }}"
+            action="{{ url_for('complete_event', event_id=event.id) }}"
             method="post"
           >
             <input type="submit" value="Complete" />
           </form>
           <form
-            action="{{ url_for('delete_event', id=event.id) }}"
+            action="{{ url_for('delete_event', event_id=event.id) }}"
             method="post"
           >
             <input type="submit" value="Delete" />
