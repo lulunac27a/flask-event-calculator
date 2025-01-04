@@ -1,10 +1,14 @@
 * {
-    font-family: system-ui,  Arial, Helvetica, sans-serif;
-    line-height: 125%;
+  /*global styles*/
+  font-family: system-ui, Arial, Helvetica, sans-serif;
+  line-height: 125%;
 }
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-    padding: 5px;
-    text-align: center;
+table,
+th,
+td {
+  /*table styles*/
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 5px;
+  text-align: center;
 }
