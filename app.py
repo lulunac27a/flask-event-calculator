@@ -126,6 +126,7 @@ def delete_event(event_id):  # delete event from event id
     if event:
         db.session.delete(event)  # delete event from database
         db.session.commit()  # commit database changes
+    return redirect(url_for("index"))  # redirect to index page template
 
 
 if __name__ == "__main__":
