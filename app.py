@@ -1,14 +1,14 @@
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from flask import Flask, render_template, redirect, url_for, request
-from flask_migrate import Migrate, migrate
+from flask_migrate import Migrate as MigrateClass
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+migrate_instance = MigrateClass(app, db)
 
 
 class User(db.Model):
