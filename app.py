@@ -12,65 +12,84 @@ migrate = Migrate(app, db)
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True,
+                   unique=True, nullable=False)  # user id
+    username = db.Column(db.String(80), unique=True,
+                         nullable=False)  # username
 
 
 class Event(db.Model):
-    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
-    name = db.Column(db.String(80), nullable=False)
+    id = db.Column(
+        db.Integer, primary_key=True, unique=True, nullable=False
+    )  # event id
+    name = db.Column(db.String(80), nullable=False)  # event name
     original_due_date = db.Column(
-        db.Date, default=date.today(), nullable=False)
-    due_date = db.Column(db.Date, default=date.today(), nullable=False)
-    repeat_interval = db.Column(db.Integer, default=1, nullable=False)
-    repeat_often = db.Column(db.Integer, default=1, nullable=False)
-    times_completed = db.Column(db.Integer, default=0, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
-    user = db.relationship("User", backref=db.backref("events", lazy=True))
+        db.Date, default=date.today(), nullable=False
+    )  # event original due date
+    due_date = db.Column(
+        db.Date, default=date.today(), nullable=False
+    )  # event due date
+    repeat_interval = db.Column(
+        db.Integer, default=1, nullable=False
+    )  # event repeat interval
+    repeat_often = db.Column(
+        db.Integer, default=1, nullable=False
+    )  # event repeat often
+    times_completed = db.Column(
+        db.Integer, default=0, nullable=False
+    )  # number of times event has completed
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))  # user id
+    user = db.relationship(
+        "User", backref=db.backref("events", lazy=True))  # user
 
 
-@app.template_filter("next_event_date")
+@app.template_filter("next_event_date")  # next event date filter
 def next_event_date_filter(
     original_due_date, repeat_interval, repeat_often, times_completed
-):
-    if repeat_often == 1:
-        return original_due_date + relativedelta(days=repeat_interval * times_completed)
-    elif repeat_often == 2:
+):  # calculate next recurring event date
+    if repeat_often == 1:  # if repeat interval is daily
+        return original_due_date + relativedelta(
+            days=repeat_interval * times_completed
+        )  # add days to original date
+    elif repeat_often == 2:  # if repeat interval is weekly
         return original_due_date + relativedelta(
             weeks=repeat_interval * times_completed
-        )
-    elif repeat_often == 3:
+        )  # add weeks to original date
+    elif repeat_often == 3:  # if repeat interval is monthly
         return original_due_date + relativedelta(
             months=repeat_interval * times_completed
-        )
-    elif repeat_often == 4:
+        )  # add months to original date
+    elif repeat_often == 4:  # if repeat interval is yearly
         return original_due_date + relativedelta(
             years=repeat_interval * times_completed
-        )
+        )  # add years to original date
 
 
-def init_db():
+def init_db():  # initialize database
     with app.app_context():
-        db.create_all()
-        if User.query.count() == 0:
-            user = User(username="Player")
-            db.session.add(user)
-            db.session.commit()
+        db.create_all()  # create tables if they don't exist
+        if User.query.count() == 0:  # if there are no users
+            user = User(username="Player")  # create new user
+            db.session.add(user)  # add user to database
+            db.session.commit()  # commit database changes
 
 
 @app.route("/")
-def index():
-    events = Event.query.all()
-    user = User.query.first()
-    return render_template("index.html", events=events, user=user)
+def index():  # get index page template
+    events = Event.query.all()  # get list of all events
+    user = User.query.first()  # get first user in database
+    return render_template(
+        "index.html", events=events, user=user
+    )  # return index page template
 
 
 @app.route("/add_event", methods=["POST"])
-def add_event():
-    name = request.form.get("name")
-    original_due_date = request.form.get("start_date")
-    repeat_interval = int(request.form.get("repeat_interval"))
-    repeat_often = int(request.form.get("repeat_often"))
+def add_event():  # add event to database
+    name = request.form.get("name")  # get name from add event form
+    original_due_date = request.form.get("start_date")  # get original due date
+    repeat_interval = int(request.form.get(
+        "repeat_interval"))  # get repeat interval
+    repeat_often = int(request.form.get("repeat_often"))  # get repeat often
     new_event = Event(
         name=name,
         original_due_date=datetime.strptime(
@@ -79,34 +98,34 @@ def add_event():
         repeat_interval=repeat_interval,
         repeat_often=repeat_often,
         times_completed=0,
-    )
-    db.session.add(new_event)
-    db.session.commit()
-    return redirect(url_for("index"))
+    )  # create new event with input parameters
+    db.session.add(new_event)  # add new event to database
+    db.session.commit()  # commit database changes
+    return redirect(url_for("index"))  # redirect to index page template
 
 
 @app.route("/complete_event/<int:event_id>")
-def complete_event(event_id):
-    event = Event.query.get(event_id)
-    event.times_completed += 1
+def complete_event(event_id):  # complete event from event id
+    event = Event.query.get(event_id)  # find event by event id
+    event.times_completed += 1  # increase event times completed by 1
     event.due_date = next_event_date_filter(
         event.original_due_date,
         event.repeat_interval,
         event.repeat_often,
         event.times_completed,
-    )
-    db.session.commit()
-    return redirect(url_for("index"))
+    )  # calculate event due date
+    db.session.commit()  # commit database changes
+    return redirect(url_for("index"))  # redirect to index page template
 
 
 @app.route("/delete_event/<int:event_id>")
-def delete_event(event_id):
-    event = Event.query.get(event_id)
+def delete_event(event_id):  # delete event from event id
+    event = Event.query.get(event_id)  # find event by event id
     if event:
-        db.session.delete(event)
-        db.session.commit()
+        db.session.delete(event)  # delete event from database
+        db.session.commit()  # commit database changes
 
 
 if __name__ == "__main__":
-    init_db()
-    app.run(debug=True, port=8081)
+    init_db()  # initialize database
+    app.run(debug=True, port=8081)  # run the server at port 8081
