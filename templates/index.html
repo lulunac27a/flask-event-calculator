@@ -41,7 +41,6 @@
           event.repeat_often, event.times_completed) }}
         </td>
         <td>
-          {#
           <form
             action="{{ url_for('delete_event', id=event.id) }}"
             method="post"
@@ -54,7 +53,6 @@
           >
             <input type="submit" value="Complete" />
           </form>
-          #}
         </td>
       </tr>
       {% endfor %}
