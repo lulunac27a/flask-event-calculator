@@ -85,7 +85,7 @@ def add_event():
     return redirect(url_for("index"))
 
 
-@app.route("/complete_event/<int:event_id>", methods=["POST"])
+@app.route("/complete_event/<int:event_id>")
 def complete_event(event_id):
     event = Event.query.get(event_id)
     event.times_completed += 1
@@ -93,7 +93,7 @@ def complete_event(event_id):
     return redirect(url_for("index"))
 
 
-@app.route("/delete_event/<int:event_id>", methods=["POST"])
+@app.route("/delete_event/<int:event_id>")
 def delete_event(event_id):
     event = Event.query.get(event_id)
     if event:
