@@ -7,10 +7,11 @@
     Add New Event<br />
     <form action="{{ url_for('add_event') }}" method="post">
       <!--form to add event-->
-      Name:<input type="text" id="name" name="name" /> Date:<input
+      Name:<input type="text" id="name" name="name" required /> Date:<input
         type="date"
         id="start_date"
         name="start_date"
+        required
       />
       Repeat every:<input
         type="number"
@@ -18,9 +19,10 @@
         name="repeat_interval"
         min="1"
         step="1"
+        required
       />
-      Repeat interval:<select id="repeat_often" name="repeat_often">
-        <option value="1">Day</option>
+      Repeat interval:<select id="repeat_often" name="repeat_often" required>
+        <option value="1" selected>Day</option>
         <option value="2">Week</option>
         <option value="3">Month</option>
         <option value="4">Year</option>
